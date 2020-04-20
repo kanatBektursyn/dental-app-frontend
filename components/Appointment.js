@@ -1,17 +1,25 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import styled from "styled-components/native";
 
 import GrayText from "./GrayText";
 import Badge from "./Badge";
 
+import getAvatarColor from "../utils/getAvatarColor";
+
 const Appointment = ({ navigate, item }) => {
-  const { user, diagnosis, active, time } = item;
+  const { patient, diagnosis, active, time } = item;
+
+  const avatarColors = getAvatarColor(patient.fullname[0].toUpperCase());
   return (
     <GroupItem onPress={navigate.bind(this, "Patient", item)}>
-      <Avatar source={{ uri: user.avatar }} />
+      <Avatar style={{ backgroundColor: avatarColors.background }}>
+        <Letter style={{ color: avatarColors.color }}>
+          {patient.fullname[0].toUpperCase()}
+        </Letter>
+      </Avatar>
       <View style={{ flex: 1 }}>
-        <FullName>{user.fullname}</FullName>
+        <FullName>{patient.fullname}</FullName>
         <GrayText>{diagnosis}</GrayText>
       </View>
       <Badge active={active}>{time}</Badge>
@@ -24,12 +32,20 @@ Appointment.defaultProps = {
   items: [],
 };
 
+const Letter = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: -1px;
+`;
+
 const FullName = styled.Text`
   font-weight: bold;
   font-size: 18px;
 `;
 
-const Avatar = styled.Image`
+const Avatar = styled.View`
+  align-items: center;
+  justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: 50px;

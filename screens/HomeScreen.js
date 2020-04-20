@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { SectionList } from "react-native";
+import { SectionList, Text } from "react-native";
 import styled from "styled-components/native";
+import Swipeable from "react-native-swipeable-row";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
 
 import { Appointment, SectionTitle } from "../components";
+import { appointments, patients } from "../utils/api";
 
 const HomeScreen = ({ navigation }) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios.get("https://trycode.pw/c/HSA4S.json").then(({ data }) => {
-      setData(data);
-    });
+    appointments
+      .get()
+      .then(({ data }) => {
+        setData(data.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, []);
 
   return (
@@ -22,7 +28,9 @@ const HomeScreen = ({ navigation }) => {
           sections={data}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
-            <Appointment navigate={navigation.navigate} item={item} />
+            <Swipeable rightButtons={[<Text>Text1</Text>, <Text>Text2</Text>]}>
+              <Appointment navigate={navigation.navigate} item={item} />
+            </Swipeable>
           )}
           renderSectionHeader={({ section: { title } }) => (
             <SectionTitle>{title}</SectionTitle>
