@@ -4,28 +4,38 @@ import styled from "styled-components/native";
 import Swipeable from "react-native-swipeable-row";
 import { Ionicons } from "@expo/vector-icons";
 
-import { Appointment, SectionTitle } from "../components";
-import { appointments, patients } from "../utils/api";
+import { Appointment, SectionTitle, Container } from "../components";
+import { appointments } from "../utils/api";
 
 const HomeScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
 
-  useEffect(() => {
+  const fetchAppointments = () => {
+    setIsLoading(true);
     appointments
       .get()
       .then(({ data }) => {
         setData(data.data);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (err) {
+        console.log(err);
+        setIsLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(fetchAppointments, []);
 
   return (
-    <Container>
+    <HomeContainer>
       {data && (
         <SectionList
           sections={data}
+          onRefresh={fetchAppointments}
+          refreshing={isLoading}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => (
             <Swipeable rightButtons={[<Text>Text1</Text>, <Text>Text2</Text>]}>
@@ -38,6 +48,7 @@ const HomeScreen = ({ navigation }) => {
         />
       )}
       <PlusButton
+        onPress={navigation.navigate.bind(this, "AddPatient")}
         style={{
           shadowColor: "2A86FF",
           shadowOffset: { width: 0, height: 2 },
@@ -48,9 +59,13 @@ const HomeScreen = ({ navigation }) => {
       >
         <Ionicons name="ios-add" size={36} color="white" />
       </PlusButton>
-    </Container>
+    </HomeContainer>
   );
 };
+
+const HomeContainer = styled(Container)`
+  padding: 0px;
+`;
 
 const PlusButton = styled.TouchableOpacity`
   align-items: center;
@@ -62,11 +77,6 @@ const PlusButton = styled.TouchableOpacity`
   position: absolute;
   right: 20px;
   bottom: 20px;
-`;
-
-const Container = styled.View`
-  flex: 1;
-  background: #fff;
 `;
 
 export default HomeScreen;

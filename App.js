@@ -3,7 +3,7 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator, TransitionSpecs } from "react-navigation-stack";
 import { fromLeft } from "react-navigation-transitions";
 
-import { HomeScreen, PatientScreen } from "./screens";
+import { HomeScreen, PatientScreen, AddPatientScreen } from "./screens";
 
 const AppNavigator = createStackNavigator(
   {
@@ -30,6 +30,19 @@ const AppNavigator = createStackNavigator(
         },
       },
       screen: PatientScreen,
+    },
+    AddPatient: {
+      navigationOptions: {
+        gestureDirection: "horizontal",
+        gestureEnabled: true,
+        title: "Добавить Пациента",
+        headerTintColor: "#2a86ff",
+        headerStyle: {
+          elevation: 0.8,
+          shadowOpacity: 0.8,
+        },
+      },
+      screen: AddPatientScreen,
     },
   },
   { initialRouteName: "Home" }

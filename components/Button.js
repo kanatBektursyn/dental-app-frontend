@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 
-const ButtonBase = ({ children, color }) => (
-  <Button color={color}>
+const ButtonBase = ({ children, color, onPress }) => (
+  <Button onPress={onPress} color={color}>
     <ButtonText>{children}</ButtonText>
   </Button>
 );
