@@ -1,9 +1,13 @@
 import React from "react";
 import { createAppContainer } from "react-navigation";
-import { createStackNavigator, TransitionSpecs } from "react-navigation-stack";
-import { fromLeft } from "react-navigation-transitions";
+import { createStackNavigator } from "react-navigation-stack";
 
-import { HomeScreen, PatientScreen, AddPatientScreen } from "./screens";
+import {
+  HomeScreen,
+  PatientScreen,
+  AddPatientScreen,
+  AddAppointmentScreen,
+} from "./screens";
 
 const AppNavigator = createStackNavigator(
   {
@@ -43,6 +47,19 @@ const AppNavigator = createStackNavigator(
         },
       },
       screen: AddPatientScreen,
+    },
+    AddAppointment: {
+      navigationOptions: {
+        gestureDirection: "horizontal",
+        gestureEnabled: true,
+        title: "Добавить Приём",
+        headerTintColor: "#2a86ff",
+        headerStyle: {
+          elevation: 0.8,
+          shadowOpacity: 0.8,
+        },
+      },
+      screen: AddAppointmentScreen,
     },
   },
   { initialRouteName: "Home" }

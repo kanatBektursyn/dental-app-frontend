@@ -1,60 +1,128 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, ActivityIndicator, Linking } from "react-native";
 import styled from "styled-components/native";
-import { GrayText, Button, Appointment, Badge } from "../components";
+import {
+  GrayText,
+  Button,
+  Appointment,
+  Badge,
+  PlusButton,
+} from "../components";
 import { Foundation, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
-const PatientScreen = ({ navigation }) => (
-  <View style={{ height: "100%" }}>
-    <PatientDetails>
-      <PatientFullname>
-        {navigation.getParam("patient").fullname}
-      </PatientFullname>
-      <GrayText>{navigation.getParam("patient").phone}</GrayText>
-      <PatientButtons>
-        <FormulaButtonView>
-          <Button>Формула зубов</Button>
-        </FormulaButtonView>
-        <PhoneButtonView>
-          <Button color="#84d269">
-            <Foundation name="telephone" size={24} color="white" />
-          </Button>
-        </PhoneButtonView>
-      </PatientButtons>
-    </PatientDetails>
+import { patients } from "../utils/api";
 
-    <PatientAppointments>
-      <Container>
-        <AppointmentCard>
-          <MoreButton>
-            <MaterialIcons name="unfold-more" size={24} color="#a3a3a3" />
-          </MoreButton>
-          <AppointmentCardRow>
-            <FontAwesome5 name="tooth" size={16} color="#a3a3a3" />
-            <AppointmentCardLabel>
-              Зуб: <Text style={{ fontWeight: "bold" }}>12</Text>
-            </AppointmentCardLabel>
-          </AppointmentCardRow>
+const PatientScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
 
-          <AppointmentCardRow>
-            <MaterialIcons name="library-books" size={16} color="#a3a3a3" />
-            <AppointmentCardLabel>
-              Диагноз: <Text style={{ fontWeight: "bold" }}>пульпит</Text>
-            </AppointmentCardLabel>
-          </AppointmentCardRow>
-          <AppointmentCardRow
-            style={{ justifyContent: "space-between", marginTop: 20 }}
-          >
-            <Badge style={{ width: 185 }} active>
-              11.10.2019 - 15:40
-            </Badge>
-            <Badge color="green">1500$</Badge>
-          </AppointmentCardRow>
-        </AppointmentCard>
-      </Container>
-    </PatientAppointments>
-  </View>
-);
+  useEffect(() => {
+    const id = navigation.getParam("patient")._id;
+    patients
+      .show(id)
+      .then(({ data }) => {
+        setAppointments(data.data.appointments);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        setIsLoading(false);
+        alert(e.response);
+      });
+  }, []);
+
+  return (
+    <View style={{ height: "100%" }}>
+      <PatientDetails>
+        <PatientFullname>
+          {navigation.getParam("patient").fullname}
+        </PatientFullname>
+        <GrayText>{navigation.getParam("patient").phone}</GrayText>
+        <PatientButtons>
+          <FormulaButtonView>
+            <Button>Формула зубов</Button>
+          </FormulaButtonView>
+          <PhoneButtonView>
+            <Button
+              onPress={() =>
+                Linking.openURL(
+                  "tel:" + navigation.getParam("patient", {}).phone
+                )
+              }
+              color="#84d269"
+            >
+              <Foundation name="telephone" size={24} color="white" />
+            </Button>
+          </PhoneButtonView>
+        </PatientButtons>
+      </PatientDetails>
+
+      <PatientAppointments>
+        <Container>
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#2a86ff" />
+          ) : (
+            appointments.map((appointment) => {
+              return (
+                <AppointmentCard key={appointment._id}>
+                  <MoreButton>
+                    <MaterialIcons
+                      name="unfold-more"
+                      size={24}
+                      color="#a3a3a3"
+                    />
+                  </MoreButton>
+                  <AppointmentCardRow>
+                    <FontAwesome5 name="tooth" size={16} color="#a3a3a3" />
+                    <AppointmentCardLabel>
+                      Зуб:{" "}
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {appointment.dentNumber}
+                      </Text>
+                    </AppointmentCardLabel>
+                  </AppointmentCardRow>
+
+                  <AppointmentCardRow>
+                    <MaterialIcons
+                      name="library-books"
+                      size={16}
+                      color="#a3a3a3"
+                    />
+                    <AppointmentCardLabel>
+                      Диагноз:{" "}
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {appointment.diagnosis}
+                      </Text>
+                    </AppointmentCardLabel>
+                  </AppointmentCardRow>
+                  <AppointmentCardRow
+                    style={{
+                      justifyContent: "space-between",
+                      marginTop: 20,
+                    }}
+                  >
+                    <Badge style={{ width: 185 }} active>
+                      {appointment.date} - {appointment.time}
+                    </Badge>
+                    <Badge color="green">{appointment.price}</Badge>
+                  </AppointmentCardRow>
+                </AppointmentCard>
+              );
+            })
+          )}
+        </Container>
+      </PatientAppointments>
+      <PlusButton onPress={navigation.navigate.bind(this, "AddAppointment")} />
+    </View>
+  );
+};
 const MoreButton = styled.TouchableOpacity`
   position: absolute;
   justify-content: center;
@@ -84,6 +152,7 @@ const AppointmentCard = styled.View`
   elevation: 0.6;
   padding: 20px 25px;
   border-radius: 10px;
+  margin-bottom: 20px;
 `;
 
 const Container = styled.View`

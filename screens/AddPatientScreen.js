@@ -26,7 +26,7 @@ const AddPatientScreen = ({ navigation }) => {
         navigation.navigate("Home");
       })
       .catch((e) => {
-        console.log(e.response.data.message);
+        alert("Проверьте параметры");
       });
   };
 
@@ -66,14 +66,26 @@ const AddPatientScreen = ({ navigation }) => {
         />
       </Item>
       <ButtonView>
-        <Button onPress={onSubmit} color={"#84d269"}>
+        <Button
+          onPress={onSubmit}
+          color={"#84d269"}
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.9,
+            shadowRadius: 3.5,
+            elevation: 4,
+          }}
+        >
           <Ionicons name="ios-add" size={28} color="white" />
-          <Text style={{ fontSize: 18 }}>Добавить</Text>
+          Добавить
         </Button>
       </ButtonView>
     </ContainerReDo>
   );
 };
+
+const AddButton = styled(Button)``;
 
 const ContainerReDo = styled(Container)`
   height: 100%;
