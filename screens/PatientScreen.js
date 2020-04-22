@@ -119,7 +119,11 @@ const PatientScreen = ({ navigation }) => {
           )}
         </Container>
       </PatientAppointments>
-      <PlusButton onPress={navigation.navigate.bind(this, "AddAppointment")} />
+      <PlusButton
+        onPress={navigation.navigate.bind(this, "AddAppointment", {
+          patientId: navigation.getParam("patient", {})._id,
+        })}
+      />
     </View>
   );
 };

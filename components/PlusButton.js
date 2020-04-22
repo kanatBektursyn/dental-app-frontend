@@ -17,7 +17,7 @@ const PlusButton = ({ onPress }) => (
   </PlusButtonBase>
 );
 
-const PlusButtonBase = styled.TouchableOpacity`
+const PlusButtonBase = styled.TouchableHighlight`
   align-items: center;
   justify-content: center;
   border-radius: 50px;

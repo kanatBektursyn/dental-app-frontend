@@ -12,9 +12,11 @@ import {
 } from "../components";
 import { appointments } from "../utils/api";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = (props) => {
+  const { navigation } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState(null);
 
   const fetchAppointments = () => {
     setIsLoading(true);
@@ -33,6 +35,8 @@ const HomeScreen = ({ navigation }) => {
   };
 
   useEffect(fetchAppointments, []);
+
+  useEffect(fetchAppointments, [navigation.state.params]);
 
   const removeAppointment = (id) => {
     Alert.alert(

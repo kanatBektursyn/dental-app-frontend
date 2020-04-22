@@ -13,7 +13,7 @@ const AppNavigator = createStackNavigator(
   {
     Home: {
       navigationOptions: {
-        title: "Пациенты",
+        title: "Журнал Записей",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,

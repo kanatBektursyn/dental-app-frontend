@@ -1,33 +1,57 @@
-import React, { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
-
-import { Item, Label, Input, Picker, DatePicker } from "native-base";
+import React, { useState, useEffect } from "react";
+import DatePicker from "react-native-datepicker";
+import { NavigationActions } from "react-navigation";
+import { Item, Label, Input, Picker } from "native-base";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components";
 
-import { patients } from "../utils/api";
+import { appointments } from "../utils/api";
 
 import { Button, Container } from "../components";
 
 const AddAppointmentScreen = ({ navigation }) => {
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState({
+    diagnosis: "Пульпит",
+    dentNumber: null,
+    price: "",
+    date: null,
+    time: null,
+    patient: navigation.getParam("patientId"),
+  });
 
-  const handleChange = (name, e) => {
-    const text = e.nativeEvent.text;
+  const fieldsLabels = {
+    diagnosis: "Диагноз",
+    dentNumber: "Номер зуба",
+    price: "Цена",
+    date: "Дата",
+    time: "Время",
+  };
+
+  const setFieldValue = (name, value) => {
     setValues({
       ...values,
-      [name]: text,
+      [name]: value,
     });
   };
 
+  const handleInputChange = (name, e) => {
+    const text = e.nativeEvent.text;
+    setFieldValue(name, text);
+  };
+
   const onSubmit = () => {
-    patients
+    appointments
       .add(values)
       .then(() => {
-        navigation.navigate("Home");
+        navigation.navigate("Home", { lastUpdate: new Date() });
       })
       .catch((e) => {
-        alert("Проверьте параметры");
+        if (e.response.data && e.response.data.message) {
+          e.response.data.message.forEach((err) => {
+            const fieldName = err.param;
+            alert(`Ошибка! Поле "${fieldsLabels[fieldName]}" указано неверно!`);
+          });
+        }
       });
   };
 
@@ -43,15 +67,33 @@ const AddAppointmentScreen = ({ navigation }) => {
           Номер зуба
         </Label>
         <Input
-          onChange={handleChange.bind(this, "dentNumber")}
+          onChange={handleInputChange.bind(this, "dentNumber")}
           value={values.dentNumber}
           autoFocus
           style={{ marginTop: 30 }}
           keyboardType="numeric"
         />
       </Item>
-      <Item style={{ marginLeft: 0, marginTop: 30 }}>
+      <Item floatingLabel style={{ marginLeft: 0 }}>
+        <Label
+          style={{
+            marginTop: 15,
+            marginLeft: 9,
+          }}
+        >
+          Цена
+        </Label>
+        <Input
+          onChange={handleInputChange.bind(this, "price")}
+          value={values.price}
+          keyboardType="numeric"
+          style={{ marginTop: 40 }}
+        />
+      </Item>
+      <Item style={{ marginLeft: 3, marginTop: 25 }}>
         <Picker
+          selectedValue={values.diagnosis}
+          onValueChange={setFieldValue.bind(this, "diagnosis")}
           mode="dialog"
           iosIcon={
             <MaterialIcons
@@ -64,26 +106,10 @@ const AddAppointmentScreen = ({ navigation }) => {
           placeholderIconColor="#007aff"
           style={{ width: undefined }}
         >
-          <Picker.Item label="Пульпит" value="1" />
-          <Picker.Item label="Удаление зуба" value="2" />
-          <Picker.Item label="Пломбирование" value="3" />
+          <Picker.Item label="Пульпит" value="Пульпит" />
+          <Picker.Item label="Удаление зуба" value="Удаление зуба" />
+          <Picker.Item label="Пломбирование" value="Пломбирование" />
         </Picker>
-      </Item>
-      <Item floatingLabel style={{ marginLeft: 0 }}>
-        <Label
-          style={{
-            marginTop: 15,
-            marginLeft: 8,
-          }}
-        >
-          Цена
-        </Label>
-        <Input
-          onChange={handleChange.bind(this, "price")}
-          value={values.price}
-          keyboardType="numeric"
-          style={{ marginTop: 40 }}
-        />
       </Item>
       <Item
         last
@@ -95,20 +121,46 @@ const AddAppointmentScreen = ({ navigation }) => {
         }}
       >
         <DatePicker
-          defaultDate={new Date()}
-          minimumDate={new Date()}
-          locale={"ru-RU"}
-          modalTransparent={false}
-          animationType={"fade"}
-          androidMode={"default"}
-          placeHolderText="Дата"
-          placeHolderTextStyle={{ color: "#000" }}
+          style={{ flex: 1 }}
+          date={values.date}
+          mode="date"
+          placeholder="Дата"
+          format="YYYY-MM-DD"
+          minDate={new Date()}
+          maxDate="2022-01-01"
+          confirmBtnTestID="Сохранить"
+          cancelBtnText="Отмена"
+          showIcon={false}
+          customStyles={{
+            dateInput: {
+              borderWidth: 0,
+            },
+            dateText: {
+              fontSize: 18,
+            },
+          }}
+          onDateChange={setFieldValue.bind(this, "date")}
         />
-        <DateTimePicker
+        <DatePicker
+          style={{ flex: 1 }}
+          date={values.time}
           mode="time"
-          value={new Date("2020-04-23")}
-          is24Hour={true}
-          display="default"
+          placeholder="Время"
+          format="HH:mm"
+          minDate={new Date()}
+          maxDate="2022-01-01"
+          confirmBtnTestID="Сохранить"
+          cancelBtnText="Отмена"
+          showIcon={false}
+          customStyles={{
+            dateInput: {
+              borderWidth: 0,
+            },
+            dateText: {
+              fontSize: 18,
+            },
+          }}
+          onDateChange={setFieldValue.bind(this, "time")}
         />
       </Item>
       <ButtonView>
