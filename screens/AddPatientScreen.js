@@ -23,7 +23,7 @@ const AddPatientScreen = ({ navigation }) => {
     patients
       .add(values)
       .then(() => {
-        navigation.navigate("Home");
+        navigation.navigate("Patients");
       })
       .catch((e) => {
         alert("Проверьте параметры");

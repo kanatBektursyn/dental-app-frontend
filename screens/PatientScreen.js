@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, ActivityIndicator, Linking } from "react-native";
+import { Text, View, ActivityIndicator, Linking, FlatList } from "react-native";
 import styled from "styled-components/native";
 import {
   GrayText,
@@ -11,6 +11,7 @@ import {
 import { Foundation, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
 import { patients } from "../utils/api";
+import phoneFormat from "../utils/phoneFormat";
 
 const PatientScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +37,7 @@ const PatientScreen = ({ navigation }) => {
         <PatientFullname>
           {navigation.getParam("patient").fullname}
         </PatientFullname>
-        <GrayText>{navigation.getParam("patient").phone}</GrayText>
+        <GrayText>{phoneFormat(navigation.getParam("patient").phone)}</GrayText>
         <PatientButtons>
           <FormulaButtonView>
             <Button>Формула зубов</Button>

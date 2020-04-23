@@ -1,5 +1,5 @@
 export default (letter) => {
-  const charCode = letter.charCodeAt();
+  const charCode = letter.charCodeAt(0);
   if (charCode >= 1040 && charCode <= 1049) {
     return {
       background: "#dad5f8",

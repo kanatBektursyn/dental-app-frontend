@@ -6,6 +6,7 @@ import GrayText from "./GrayText";
 import Badge from "./Badge";
 
 import getAvatarColor from "../utils/getAvatarColor";
+import phoneFormat from "../utils/phoneFormat";
 
 const Appointment = ({ navigate, item }) => {
   const { patient, diagnosis, active, time } = item;
@@ -22,7 +23,7 @@ const Appointment = ({ navigate, item }) => {
         <FullName>{patient.fullname}</FullName>
         <GrayText>{diagnosis}</GrayText>
       </View>
-      <Badge active={active}>{time}</Badge>
+      {time && <Badge active={active}>{time}</Badge>}
     </GroupItem>
   );
 };
