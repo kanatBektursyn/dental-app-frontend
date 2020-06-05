@@ -10,6 +10,7 @@ import {
   AddPatientScreen,
   AddAppointmentScreen,
   PatientsScreen,
+  PatientChatScreen,
 } from "./screens";
 
 const AppNavigator = createStackNavigator(
@@ -58,6 +59,19 @@ const AppNavigator = createStackNavigator(
         },
       },
       screen: PatientsScreen,
+    },
+    PatientChatScreen: {
+      navigationOptions: {
+        gestureDirection: "horizontal",
+        gestureEnabled: true,
+        title: "Dialogue",
+        headerTintColor: "#2a86ff",
+        headerStyle: {
+          elevation: 0.8,
+          shadowOpacity: 0.8,
+        },
+      },
+      screen: PatientChatScreen,
     },
     AddPatient: {
       navigationOptions: {

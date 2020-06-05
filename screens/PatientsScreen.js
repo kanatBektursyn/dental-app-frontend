@@ -25,6 +25,7 @@ const PatientsScreen = (props) => {
     patients
       .get()
       .then(({ data }) => {
+        console.log(data);
         setData(data.data);
         setTimeout(() => {
           setIsLoading(false);

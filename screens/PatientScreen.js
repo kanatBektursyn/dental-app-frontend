@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, ActivityIndicator, Linking, FlatList } from "react-native";
+import { Text, FlatList, View, ActivityIndicator, Linking } from "react-native";
 import styled from "styled-components/native";
-import {
-  GrayText,
-  Button,
-  Appointment,
-  Badge,
-  PlusButton,
-} from "../components";
+import { GrayText, Button, Badge, PlusButton } from "../components";
 import { Foundation, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
 import { patients } from "../utils/api";
@@ -16,6 +10,17 @@ import phoneFormat from "../utils/phoneFormat";
 const PatientScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [appointments, setAppointments] = useState([]);
+  const [selected, setSelected] = React.useState(new Map());
+
+  const onSelect = React.useCallback(
+    (id) => {
+      const newSelected = new Map(selected);
+      newSelected.set(id, !selected.get(id));
+
+      setSelected(newSelected);
+    },
+    [selected]
+  );
 
   useEffect(() => {
     const id = navigation.getParam("patient")._id;
@@ -40,7 +45,15 @@ const PatientScreen = ({ navigation }) => {
         <GrayText>{phoneFormat(navigation.getParam("patient").phone)}</GrayText>
         <PatientButtons>
           <FormulaButtonView>
-            <Button>Формула зубов</Button>
+            <Button
+              onPress={navigation.navigate.bind(
+                this,
+                "PatientChatScreen",
+                navigation
+              )}
+            >
+              Messages
+            </Button>
           </FormulaButtonView>
           <PhoneButtonView>
             <Button
@@ -62,9 +75,18 @@ const PatientScreen = ({ navigation }) => {
           {isLoading ? (
             <ActivityIndicator size="large" color="#2a86ff" />
           ) : (
-            appointments.map((appointment) => {
-              return (
-                <AppointmentCard key={appointment._id}>
+            <FlatList
+              data={appointments}
+              renderItem={(appointment) => (
+                <AppointmentCard
+                  key={appointment.item._id}
+                  style={{
+                    borderWidth: 2,
+                    borderStyle: "solid",
+                    borderRadius: 10,
+                    borderColor: "#f0f0f0",
+                  }}
+                >
                   <MoreButton>
                     <MaterialIcons
                       name="unfold-more"
@@ -81,7 +103,7 @@ const PatientScreen = ({ navigation }) => {
                           fontWeight: "bold",
                         }}
                       >
-                        {appointment.dentNumber}
+                        {appointment.item.dentNumber}
                       </Text>
                     </AppointmentCardLabel>
                   </AppointmentCardRow>
@@ -99,7 +121,7 @@ const PatientScreen = ({ navigation }) => {
                           fontWeight: "bold",
                         }}
                       >
-                        {appointment.diagnosis}
+                        {appointment.item.diagnosis}
                       </Text>
                     </AppointmentCardLabel>
                   </AppointmentCardRow>
@@ -110,13 +132,15 @@ const PatientScreen = ({ navigation }) => {
                     }}
                   >
                     <Badge style={{ width: 185 }} active>
-                      {appointment.date} - {appointment.time}
+                      {appointment.item.date} - {appointment.item.time}
                     </Badge>
-                    <Badge color="green">{appointment.price}</Badge>
+                    <Badge color="green">{appointment.item.price}</Badge>
                   </AppointmentCardRow>
                 </AppointmentCard>
-              );
-            })
+              )}
+              keyExtractor={(item) => item._id}
+              extraData={selected}
+            />
           )}
         </Container>
       </PatientAppointments>
@@ -151,10 +175,6 @@ const AppointmentCardRow = styled.View`
 `;
 
 const AppointmentCard = styled.View`
-  shadow-color: gray;
-  shadow-opacity: 0.9;
-  shadow-radius: 10px;
-  elevation: 0.6;
   padding: 20px 25px;
   border-radius: 10px;
   margin-bottom: 20px;
