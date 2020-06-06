@@ -49,7 +49,9 @@ const AddAppointmentScreen = ({ navigation }) => {
         if (e.response.data && e.response.data.message) {
           e.response.data.message.forEach((err) => {
             const fieldName = err.param;
-            alert(`Ошибка! Поле "${fieldsLabels[fieldName]}" указано неверно!`);
+            alert(
+              `Error! Field "${fieldsLabels[fieldName]}" has some troubles!`
+            );
           });
         }
       });
@@ -64,7 +66,7 @@ const AddAppointmentScreen = ({ navigation }) => {
             marginLeft: 8,
           }}
         >
-          Номер зуба
+          Teeth number
         </Label>
         <Input
           onChange={handleInputChange.bind(this, "dentNumber")}
@@ -81,7 +83,7 @@ const AddAppointmentScreen = ({ navigation }) => {
             marginLeft: 9,
           }}
         >
-          Цена
+          Price
         </Label>
         <Input
           onChange={handleInputChange.bind(this, "price")}
@@ -101,14 +103,14 @@ const AddAppointmentScreen = ({ navigation }) => {
               style={{ color: "#007aff", fontSize: 25 }}
             />
           }
-          placeholder="Выберите Диагноз"
+          placeholder="Choose Diagnosis"
           placeholderStyle={{ color: "#bfc6ea" }}
           placeholderIconColor="#007aff"
           style={{ width: undefined }}
         >
-          <Picker.Item label="Пульпит" value="Пульпит" />
-          <Picker.Item label="Удаление зуба" value="Удаление зуба" />
-          <Picker.Item label="Пломбирование" value="Пломбирование" />
+          <Picker.Item label="Pulpitis" value="Pulpitis" />
+          <Picker.Item label="Tee deletion" value="Tee deletion" />
+          <Picker.Item label="Coronating" value="Coronating" />
         </Picker>
       </Item>
       <Item
@@ -128,8 +130,8 @@ const AddAppointmentScreen = ({ navigation }) => {
           format="YYYY-MM-DD"
           minDate={new Date()}
           maxDate="2022-01-01"
-          confirmBtnTestID="Сохранить"
-          cancelBtnText="Отмена"
+          confirmBtnTestID="Save"
+          cancelBtnText="Cancel"
           showIcon={false}
           customStyles={{
             dateInput: {
@@ -145,12 +147,12 @@ const AddAppointmentScreen = ({ navigation }) => {
           style={{ flex: 1 }}
           date={values.time}
           mode="time"
-          placeholder="Время"
+          placeholder="Time"
           format="HH:mm"
           minDate={new Date()}
           maxDate="2022-01-01"
-          confirmBtnTestID="Сохранить"
-          cancelBtnText="Отмена"
+          confirmBtnTestID="Save"
+          cancelBtnText="Cancel"
           showIcon={false}
           customStyles={{
             dateInput: {
@@ -176,7 +178,7 @@ const AddAppointmentScreen = ({ navigation }) => {
           }}
         >
           <Ionicons name="ios-add" size={28} color="white" />
-          Добавить
+          Add
         </Button>
       </ButtonView>
     </ContainerReDo>

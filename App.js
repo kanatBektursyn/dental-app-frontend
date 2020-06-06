@@ -17,7 +17,7 @@ const AppNavigator = createStackNavigator(
   {
     Home: {
       navigationOptions: ({ navigation }) => ({
-        title: "Журнал Записей",
+        title: "Appointments List",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,
@@ -38,7 +38,7 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         gestureDirection: "horizontal",
         gestureEnabled: true,
-        title: "Карта Пациента",
+        title: "Patients Card",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,
@@ -51,7 +51,7 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         gestureDirection: "horizontal",
         gestureEnabled: true,
-        title: "Журнал Пациентов",
+        title: "Patients List",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,
@@ -77,7 +77,7 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         gestureDirection: "horizontal",
         gestureEnabled: true,
-        title: "Добавить Пациента",
+        title: "Add Patient",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,
@@ -90,7 +90,7 @@ const AppNavigator = createStackNavigator(
       navigationOptions: {
         gestureDirection: "horizontal",
         gestureEnabled: true,
-        title: "Добавить Приём",
+        title: "Add Appointment",
         headerTintColor: "#2a86ff",
         headerStyle: {
           elevation: 0.8,

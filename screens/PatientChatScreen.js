@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components/native";
-
+import { ActivityIndicator } from "react-native";
 import {
   GiftedChat,
   InputToolbar,
@@ -11,13 +11,13 @@ import { messagesApi } from "../utils/api";
 
 const PatientChatScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   const fetchMessages = () => {
     setIsLoading(true);
     messagesApi
       .get()
       .then(({ data }) => {
-        console.log(data);
         setMessages(data.messages);
         setTimeout(() => {
           setIsLoading(false);
@@ -33,26 +33,18 @@ const PatientChatScreen = ({ navigation }) => {
 
   useEffect(fetchMessages, [navigation.state.params]);
 
-  const [messages, setMessages] = useState([
-    /**
-     * Mock message data
-     */
-    // example of system message
-    // example of chat message
-    {
-      _id: 1,
-      text: "Hello!",
-      createdAt: new Date().getTime(),
-      user: {
-        _id: navigation.getParam("state").params.patient._id,
-        name: navigation.getParam("state").params.patient.fullname,
-      },
-    },
-  ]);
-
   // helper method that is sends a message
   function handleSend(newMessage = []) {
-    setMessages(GiftedChat.append(messages, newMessage));
+    console.log(newMessage);
+
+    messagesApi
+      .add(newMessage)
+      .then(() => {
+        setMessages(GiftedChat.append(messages, newMessage));
+      })
+      .catch((e) => {
+        alert("Something went wrong");
+      });
   }
 
   const customtInputToolbar = (props) => {
@@ -70,12 +62,16 @@ const PatientChatScreen = ({ navigation }) => {
 
   return (
     <ChatContainer>
-      <GiftedChat
-        renderInputToolbar={(props) => customtInputToolbar(props)}
-        messages={messages}
-        onSend={(newMessage) => handleSend(newMessage)}
-        user={{ _id: 1 }}
-      />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#2a86ff" />
+      ) : (
+        <GiftedChat
+          renderInputToolbar={(props) => customtInputToolbar(props)}
+          messages={messages}
+          onSend={(newMessage) => handleSend(newMessage)}
+          user={{ _id: 1 }}
+        />
+      )}
     </ChatContainer>
   );
 };
