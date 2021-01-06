@@ -10,7 +10,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.9",
     "@react-navigation/stack": "^5.2.11",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "expo": "^36.0.2",
     "expo-cli": "^3.18.4",
